@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package com.crosbymichael.guard.v1;
+
+import weak "gogoproto/gogo.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/crosbymichael/guard/api/v1;v1";
+
+service Wireguard {
+	rpc Create(CreateRequest) returns (CreateResponse);
+	rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+	rpc List(google.protobuf.Empty) returns (ListResponse);
+}
+
+message CreateRequest {
+	string id = 1 [(gogoproto.customname) = "ID"];
+	uint32 listen_port = 2;
+	string address = 3;
+}
+
+message CreateResponse {
+	Tunnel tunnel = 1;
+}
+
+message DeleteRequest {
+	string id = 1 [(gogoproto.customname) = "ID"];
+}
+
+message ListResponse {
+	repeated Tunnel tunnels = 1;
+}
+
+message Tunnel {
+	string id = 1 [(gogoproto.customname) = "ID"];
+	string private_key = 2;
+	uint32 listen_port = 3;
+	string address = 4;
+	string dns = 5 [(gogoproto.customname) = "DNS"];
+	repeated Peer peers = 6;
+	Masquerade masquerade = 7;
+}
+
+message Peer {
+	string public_key = 1;
+	repeated string allowed_ips = 2 [(gogoproto.customname) = "AllowedIPs"];
+	string endpoint = 3;
+	uint32 persistent_keepalive = 4;
+	string comment = 5;
+}
+
+message Masquerade {
+	string interface = 1;
+}
