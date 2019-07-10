@@ -38,6 +38,7 @@ import (
 
 	v1 "github.com/crosbymichael/guard/api/v1"
 	"github.com/getsentry/raven-go"
+	"github.com/gogo/protobuf/types"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -79,6 +80,7 @@ func main() {
 	app.Commands = []cli.Command{
 		createCommand,
 		deleteCommand,
+		listCommand,
 		serverCommand,
 	}
 	if err := app.Run(os.Args); err != nil {
@@ -158,7 +160,36 @@ var createCommand = cli.Command{
 		if err != nil {
 			return err
 		}
-		return json.NewEncoder(os.Stdout).Encode(r.Tunnel)
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", " ")
+		return enc.Encode(r.Tunnel)
+	},
+}
+
+var listCommand = cli.Command{
+	Name:        "list",
+	Description: "list all tunnels",
+	Action: func(clix *cli.Context) error {
+		conn, err := grpc.Dial(clix.GlobalString("address"), grpc.WithInsecure())
+		if err != nil {
+			return errors.Wrap(err, "dial server")
+		}
+		defer conn.Close()
+
+		var (
+			ctx    = cancelContext()
+			client = v1.NewWireguardClient(conn)
+		)
+		r, err := client.List(ctx, &types.Empty{})
+		if err != nil {
+			return err
+		}
+		if len(r.Tunnels) == 0 {
+			return nil
+		}
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", " ")
+		return enc.Encode(r.Tunnels)
 	},
 }
 

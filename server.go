@@ -31,9 +31,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	v1 "github.com/crosbymichael/guard/api/v1"
 	"github.com/gogo/protobuf/types"
@@ -126,7 +128,26 @@ func (s *server) Delete(ctx context.Context, r *v1.DeleteRequest) (*types.Empty,
 }
 
 func (s *server) List(ctx context.Context, _ *types.Empty) (*v1.ListResponse, error) {
-	return nil, nil
+	fi, err := ioutil.ReadDir(s.dir)
+	if err != nil {
+		return nil, errors.Wrap(err, "read config dir")
+	}
+	var r v1.ListResponse
+	for _, f := range fi {
+		if !f.IsDir() {
+			continue
+		}
+		data, err := ioutil.ReadFile(filepath.Join(s.dir, f.Name(), "tunnel.json"))
+		if err != nil {
+			return nil, errors.Wrapf(err, "read %s", f.Name())
+		}
+		var t v1.Tunnel
+		if err := json.Unmarshal(data, &t); err != nil {
+			return nil, errors.Wrap(err, "unmarshal tunnel")
+		}
+		r.Tunnels = append(r.Tunnels, &t)
+	}
+	return &r, nil
 }
 
 func (s *server) saveConf(t *v1.Tunnel) error {
@@ -159,7 +180,7 @@ func newPrivateKey(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", errors.Wrapf(err, "%s", data)
 	}
-	return string(data), nil
+	return strings.TrimSuffix(string(data), "\n"), nil
 }
 
 func wireguard(ctx context.Context, args ...string) ([]byte, error) {
