@@ -44,7 +44,10 @@ import (
 
 var empty = &types.Empty{}
 
-const defaultWireguardDir = "/etc/wireguard"
+const (
+	defaultWireguardDir = "/etc/wireguard"
+	tunnelData          = "tunnel.json"
+)
 
 func newServer(dir string) (*server, error) {
 	if err := os.MkdirAll(defaultWireguardDir, 0700); err != nil {
@@ -59,7 +62,7 @@ type server struct {
 	dir string
 }
 
-func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.CreateResponse, error) {
+func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.TunnelResponse, error) {
 	if r.ID == "" {
 		return nil, errors.New("tunnel id cannot be empty")
 	}
@@ -87,8 +90,7 @@ func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.CreateRes
 		PrivateKey: key,
 	}
 
-	dataPath := filepath.Join(path, "tunnel.json")
-	if err := saveTunnel(dataPath, &t); err != nil {
+	if err := s.saveTunnel(&t); err != nil {
 		return nil, err
 	}
 	if err := s.saveConf(&t); err != nil {
@@ -102,8 +104,64 @@ func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.CreateRes
 	if err := wgquick(ctx, "start", t.ID); err != nil {
 		return nil, errors.Wrap(err, "start tunnel")
 	}
-	return &v1.CreateResponse{
+	return &v1.TunnelResponse{
 		Tunnel: &t,
+	}, nil
+}
+
+func (s *server) AddPeer(ctx context.Context, r *v1.AddPeerRequest) (*v1.TunnelResponse, error) {
+	if r.ID == "" {
+		return nil, errors.New("tunnel id cannot be empty")
+	}
+	t, err := s.loadTunnel(r.ID)
+	if err != nil {
+		return nil, err
+	}
+	t.Peers = append(t.Peers, r.Peer)
+
+	if err := s.saveTunnel(t); err != nil {
+		return nil, err
+	}
+	if err := s.saveConf(t); err != nil {
+		return nil, err
+	}
+	if err := wgquick(ctx, "restart", t.ID); err != nil {
+		return nil, errors.Wrap(err, "restart tunnel")
+	}
+	return &v1.TunnelResponse{
+		Tunnel: t,
+	}, nil
+}
+
+func (s *server) DeletePeer(ctx context.Context, r *v1.DeletePeerRequest) (*v1.TunnelResponse, error) {
+	if r.ID == "" {
+		return nil, errors.New("tunnel id cannot be empty")
+	}
+	if r.PeerID == "" {
+		return nil, errors.New("peer id cannot be empty")
+	}
+	t, err := s.loadTunnel(r.ID)
+	if err != nil {
+		return nil, err
+	}
+	var peers []*v1.Peer
+	for _, p := range t.Peers {
+		if p.ID != r.PeerID {
+			peers = append(peers, p)
+		}
+	}
+	t.Peers = peers
+	if err := s.saveTunnel(t); err != nil {
+		return nil, err
+	}
+	if err := s.saveConf(t); err != nil {
+		return nil, err
+	}
+	if err := wgquick(ctx, "restart", t.ID); err != nil {
+		return nil, errors.Wrap(err, "restart tunnel")
+	}
+	return &v1.TunnelResponse{
+		Tunnel: t,
 	}, nil
 }
 
@@ -137,15 +195,11 @@ func (s *server) List(ctx context.Context, _ *types.Empty) (*v1.ListResponse, er
 		if !f.IsDir() {
 			continue
 		}
-		data, err := ioutil.ReadFile(filepath.Join(s.dir, f.Name(), "tunnel.json"))
+		t, err := s.loadTunnel(f.Name())
 		if err != nil {
-			return nil, errors.Wrapf(err, "read %s", f.Name())
+			return nil, err
 		}
-		var t v1.Tunnel
-		if err := json.Unmarshal(data, &t); err != nil {
-			return nil, errors.Wrap(err, "unmarshal tunnel")
-		}
-		r.Tunnels = append(r.Tunnels, &t)
+		r.Tunnels = append(r.Tunnels, t)
 	}
 	return &r, nil
 }
@@ -163,7 +217,20 @@ func (s *server) saveConf(t *v1.Tunnel) error {
 	return nil
 }
 
-func saveTunnel(path string, t *v1.Tunnel) error {
+func (s *server) loadTunnel(id string) (*v1.Tunnel, error) {
+	data, err := ioutil.ReadFile(filepath.Join(s.dir, id, tunnelData))
+	if err != nil {
+		return nil, errors.Wrapf(err, "read %s", id)
+	}
+	var t v1.Tunnel
+	if err := json.Unmarshal(data, &t); err != nil {
+		return nil, errors.Wrap(err, "unmarshal tunnel")
+	}
+	return &t, nil
+}
+
+func (s *server) saveTunnel(t *v1.Tunnel) error {
+	path := filepath.Join(s.dir, t.ID, tunnelData)
 	f, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 	if err != nil {
 		return errors.Wrap(err, "create data.json")

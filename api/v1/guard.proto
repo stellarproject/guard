@@ -8,9 +8,11 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/crosbymichael/guard/api/v1;v1";
 
 service Wireguard {
-	rpc Create(CreateRequest) returns (CreateResponse);
+	rpc Create(CreateRequest) returns (TunnelResponse);
 	rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
 	rpc List(google.protobuf.Empty) returns (ListResponse);
+	rpc AddPeer(AddPeerRequest) returns (TunnelResponse);
+	rpc DeletePeer(DeletePeerRequest) returns (TunnelResponse);
 }
 
 message CreateRequest {
@@ -19,8 +21,18 @@ message CreateRequest {
 	string address = 3;
 }
 
-message CreateResponse {
+message TunnelResponse {
 	Tunnel tunnel = 1;
+}
+
+message AddPeerRequest {
+	string id = 1 [(gogoproto.customname) = "ID"];
+	Peer peer = 2;
+}
+
+message DeletePeerRequest {
+	string id = 1 [(gogoproto.customname) = "ID"];
+	string peer_id = 2 [(gogoproto.customname) = "PeerID"];
 }
 
 message DeleteRequest {
@@ -42,11 +54,11 @@ message Tunnel {
 }
 
 message Peer {
-	string public_key = 1;
-	repeated string allowed_ips = 2 [(gogoproto.customname) = "AllowedIPs"];
-	string endpoint = 3;
-	uint32 persistent_keepalive = 4;
-	string comment = 5;
+	string id = 1 [(gogoproto.customname) = "ID"];
+	string public_key = 2;
+	repeated string allowed_ips = 3 [(gogoproto.customname) = "AllowedIPs"];
+	string endpoint = 4;
+	uint32 persistent_keepalive = 5;
 }
 
 message Masquerade {

@@ -67,24 +67,24 @@ func (m *CreateRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CreateRequest proto.InternalMessageInfo
 
-type CreateResponse struct {
+type TunnelResponse struct {
 	Tunnel               *Tunnel  `protobuf:"bytes,1,opt,name=tunnel,proto3" json:"tunnel,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *CreateResponse) Reset()      { *m = CreateResponse{} }
-func (*CreateResponse) ProtoMessage() {}
-func (*CreateResponse) Descriptor() ([]byte, []int) {
+func (m *TunnelResponse) Reset()      { *m = TunnelResponse{} }
+func (*TunnelResponse) ProtoMessage() {}
+func (*TunnelResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ebe0601dd3932458, []int{1}
 }
-func (m *CreateResponse) XXX_Unmarshal(b []byte) error {
+func (m *TunnelResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *CreateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *TunnelResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_CreateResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_TunnelResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -94,17 +94,97 @@ func (m *CreateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-func (m *CreateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateResponse.Merge(m, src)
+func (m *TunnelResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TunnelResponse.Merge(m, src)
 }
-func (m *CreateResponse) XXX_Size() int {
+func (m *TunnelResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *CreateResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateResponse.DiscardUnknown(m)
+func (m *TunnelResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_TunnelResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreateResponse proto.InternalMessageInfo
+var xxx_messageInfo_TunnelResponse proto.InternalMessageInfo
+
+type AddPeerRequest struct {
+	ID                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Peer                 *Peer    `protobuf:"bytes,2,opt,name=peer,proto3" json:"peer,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *AddPeerRequest) Reset()      { *m = AddPeerRequest{} }
+func (*AddPeerRequest) ProtoMessage() {}
+func (*AddPeerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ebe0601dd3932458, []int{2}
+}
+func (m *AddPeerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AddPeerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AddPeerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AddPeerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AddPeerRequest.Merge(m, src)
+}
+func (m *AddPeerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *AddPeerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AddPeerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AddPeerRequest proto.InternalMessageInfo
+
+type DeletePeerRequest struct {
+	ID                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	PeerID               string   `protobuf:"bytes,2,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *DeletePeerRequest) Reset()      { *m = DeletePeerRequest{} }
+func (*DeletePeerRequest) ProtoMessage() {}
+func (*DeletePeerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ebe0601dd3932458, []int{3}
+}
+func (m *DeletePeerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DeletePeerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DeletePeerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DeletePeerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DeletePeerRequest.Merge(m, src)
+}
+func (m *DeletePeerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *DeletePeerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_DeletePeerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DeletePeerRequest proto.InternalMessageInfo
 
 type DeleteRequest struct {
 	ID                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -116,7 +196,7 @@ type DeleteRequest struct {
 func (m *DeleteRequest) Reset()      { *m = DeleteRequest{} }
 func (*DeleteRequest) ProtoMessage() {}
 func (*DeleteRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ebe0601dd3932458, []int{2}
+	return fileDescriptor_ebe0601dd3932458, []int{4}
 }
 func (m *DeleteRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -155,7 +235,7 @@ type ListResponse struct {
 func (m *ListResponse) Reset()      { *m = ListResponse{} }
 func (*ListResponse) ProtoMessage() {}
 func (*ListResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ebe0601dd3932458, []int{3}
+	return fileDescriptor_ebe0601dd3932458, []int{5}
 }
 func (m *ListResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -200,7 +280,7 @@ type Tunnel struct {
 func (m *Tunnel) Reset()      { *m = Tunnel{} }
 func (*Tunnel) ProtoMessage() {}
 func (*Tunnel) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ebe0601dd3932458, []int{4}
+	return fileDescriptor_ebe0601dd3932458, []int{6}
 }
 func (m *Tunnel) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -230,11 +310,11 @@ func (m *Tunnel) XXX_DiscardUnknown() {
 var xxx_messageInfo_Tunnel proto.InternalMessageInfo
 
 type Peer struct {
-	PublicKey            string   `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
-	AllowedIPs           []string `protobuf:"bytes,2,rep,name=allowed_ips,json=allowedIps,proto3" json:"allowed_ips,omitempty"`
-	Endpoint             string   `protobuf:"bytes,3,opt,name=endpoint,proto3" json:"endpoint,omitempty"`
-	PersistentKeepalive  uint32   `protobuf:"varint,4,opt,name=persistent_keepalive,json=persistentKeepalive,proto3" json:"persistent_keepalive,omitempty"`
-	Comment              string   `protobuf:"bytes,5,opt,name=comment,proto3" json:"comment,omitempty"`
+	ID                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	PublicKey            string   `protobuf:"bytes,2,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	AllowedIPs           []string `protobuf:"bytes,3,rep,name=allowed_ips,json=allowedIps,proto3" json:"allowed_ips,omitempty"`
+	Endpoint             string   `protobuf:"bytes,4,opt,name=endpoint,proto3" json:"endpoint,omitempty"`
+	PersistentKeepalive  uint32   `protobuf:"varint,5,opt,name=persistent_keepalive,json=persistentKeepalive,proto3" json:"persistent_keepalive,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -243,7 +323,7 @@ type Peer struct {
 func (m *Peer) Reset()      { *m = Peer{} }
 func (*Peer) ProtoMessage() {}
 func (*Peer) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ebe0601dd3932458, []int{5}
+	return fileDescriptor_ebe0601dd3932458, []int{7}
 }
 func (m *Peer) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -282,7 +362,7 @@ type Masquerade struct {
 func (m *Masquerade) Reset()      { *m = Masquerade{} }
 func (*Masquerade) ProtoMessage() {}
 func (*Masquerade) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ebe0601dd3932458, []int{6}
+	return fileDescriptor_ebe0601dd3932458, []int{8}
 }
 func (m *Masquerade) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -313,7 +393,9 @@ var xxx_messageInfo_Masquerade proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*CreateRequest)(nil), "com.crosbymichael.guard.v1.CreateRequest")
-	proto.RegisterType((*CreateResponse)(nil), "com.crosbymichael.guard.v1.CreateResponse")
+	proto.RegisterType((*TunnelResponse)(nil), "com.crosbymichael.guard.v1.TunnelResponse")
+	proto.RegisterType((*AddPeerRequest)(nil), "com.crosbymichael.guard.v1.AddPeerRequest")
+	proto.RegisterType((*DeletePeerRequest)(nil), "com.crosbymichael.guard.v1.DeletePeerRequest")
 	proto.RegisterType((*DeleteRequest)(nil), "com.crosbymichael.guard.v1.DeleteRequest")
 	proto.RegisterType((*ListResponse)(nil), "com.crosbymichael.guard.v1.ListResponse")
 	proto.RegisterType((*Tunnel)(nil), "com.crosbymichael.guard.v1.Tunnel")
@@ -326,45 +408,50 @@ func init() {
 }
 
 var fileDescriptor_ebe0601dd3932458 = []byte{
-	// 607 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0xad, 0x93, 0x36, 0x21, 0x53, 0xd2, 0xc3, 0x52, 0x55, 0xc6, 0x40, 0x12, 0xf9, 0x00, 0xa1,
-	0x07, 0x5b, 0x29, 0x12, 0x07, 0xe0, 0x42, 0x28, 0x88, 0xaa, 0x05, 0x55, 0x06, 0x09, 0xc4, 0x25,
-	0x72, 0xec, 0x69, 0xba, 0xaa, 0xed, 0x75, 0x77, 0xd7, 0x41, 0xb9, 0x21, 0xf1, 0x11, 0x7c, 0x0e,
-	0xd7, 0x1e, 0x39, 0x72, 0xaa, 0xa8, 0xbf, 0x04, 0x79, 0x37, 0x4e, 0x1b, 0xa4, 0x9a, 0xde, 0x32,
-	0x33, 0x6f, 0xf6, 0xe5, 0xbd, 0xcc, 0x0b, 0x0c, 0x26, 0x54, 0x1e, 0x67, 0x63, 0x27, 0x60, 0xb1,
-	0x1b, 0x70, 0x26, 0xc6, 0xb3, 0x98, 0x06, 0xc7, 0x3e, 0x46, 0xee, 0x24, 0xf3, 0x79, 0xe8, 0xfa,
-	0x29, 0x75, 0xa7, 0x03, 0x5d, 0x38, 0x29, 0x67, 0x92, 0x11, 0x2b, 0x60, 0xb1, 0xb3, 0x84, 0x75,
-	0xf4, 0x78, 0x3a, 0xb0, 0x36, 0x27, 0x6c, 0xc2, 0x14, 0xcc, 0x2d, 0x3e, 0xe9, 0x0d, 0xeb, 0xde,
-	0x84, 0xb1, 0x49, 0x84, 0xae, 0xaa, 0xc6, 0xd9, 0x91, 0x8b, 0x71, 0x2a, 0x67, 0x7a, 0x68, 0x8f,
-	0xa1, 0xfd, 0x8a, 0xa3, 0x2f, 0xd1, 0xc3, 0xd3, 0x0c, 0x85, 0x24, 0x5b, 0x50, 0xa3, 0xa1, 0x69,
-	0xf4, 0x8c, 0x7e, 0x6b, 0xd8, 0xc8, 0xcf, 0xbb, 0xb5, 0xbd, 0x5d, 0xaf, 0x46, 0x43, 0xd2, 0x85,
-	0xf5, 0x88, 0x0a, 0x89, 0xc9, 0x28, 0x65, 0x5c, 0x9a, 0xb5, 0x9e, 0xd1, 0x6f, 0x7b, 0xa0, 0x5b,
-	0x87, 0x8c, 0x4b, 0x62, 0x42, 0xd3, 0x0f, 0x43, 0x8e, 0x42, 0x98, 0xf5, 0x62, 0xdb, 0x2b, 0x4b,
-	0xfb, 0x00, 0x36, 0x4a, 0x0e, 0x91, 0xb2, 0x44, 0x20, 0x79, 0x06, 0x0d, 0x99, 0x25, 0x09, 0x46,
-	0x8a, 0x68, 0x7d, 0xc7, 0x76, 0xae, 0x57, 0xe5, 0x7c, 0x54, 0x48, 0x6f, 0xbe, 0x61, 0x3f, 0x82,
-	0xf6, 0x2e, 0x46, 0xf8, 0xdf, 0x6f, 0x6c, 0x1f, 0xc0, 0xed, 0x03, 0x2a, 0xe4, 0x82, 0xf4, 0x05,
-	0x34, 0xf5, 0x13, 0xc2, 0x34, 0x7a, 0xf5, 0x1b, 0xb2, 0x96, 0x2b, 0xf6, 0x8f, 0x1a, 0x34, 0x74,
-	0xaf, 0xca, 0xa2, 0x94, 0xd3, 0xa9, 0x2f, 0x71, 0x74, 0x82, 0x33, 0x65, 0x51, 0xcb, 0x83, 0x79,
-	0x6b, 0x1f, 0x67, 0xff, 0x7a, 0x58, 0xaf, 0xf2, 0x70, 0x75, 0xc9, 0x43, 0x72, 0x17, 0xea, 0x61,
-	0x22, 0xcc, 0x35, 0x45, 0xda, 0xcc, 0xcf, 0xbb, 0xf5, 0xdd, 0xf7, 0x1f, 0xbc, 0xa2, 0x47, 0x9e,
-	0xc2, 0x5a, 0x8a, 0xc8, 0x85, 0xd9, 0x50, 0xaa, 0x7a, 0x55, 0xaa, 0x0e, 0x11, 0xb9, 0xa7, 0xe1,
-	0xe4, 0x0d, 0x40, 0xec, 0x8b, 0xd3, 0x0c, 0xb9, 0x1f, 0xa2, 0xd9, 0x54, 0x3f, 0xc4, 0xc3, 0xaa,
-	0xe5, 0x77, 0x0b, 0xb4, 0x77, 0x65, 0xd3, 0xfe, 0x69, 0xc0, 0x6a, 0xf1, 0x2e, 0x79, 0x00, 0x90,
-	0x66, 0xe3, 0x88, 0x06, 0x4a, 0xbe, 0xf2, 0xc7, 0x6b, 0xe9, 0x4e, 0xa1, 0xde, 0x85, 0x75, 0x3f,
-	0x8a, 0xd8, 0x57, 0x0c, 0x47, 0x34, 0x15, 0x66, 0xad, 0x57, 0xef, 0xb7, 0x86, 0x1b, 0xf9, 0x79,
-	0x17, 0x5e, 0xea, 0xf6, 0xde, 0xa1, 0xf0, 0x60, 0x0e, 0xd9, 0x4b, 0x05, 0xb1, 0xe0, 0x16, 0x26,
-	0x61, 0xca, 0x68, 0x22, 0xe7, 0x27, 0xb5, 0xa8, 0xc9, 0x00, 0x36, 0x53, 0xe4, 0x42, 0x59, 0x27,
-	0x47, 0x27, 0x88, 0xa9, 0x1f, 0xd1, 0x29, 0x2a, 0xdb, 0xda, 0xde, 0x9d, 0xcb, 0xd9, 0x7e, 0x39,
-	0x2a, 0xcc, 0x0d, 0x58, 0x1c, 0x63, 0x22, 0xb5, 0x8d, 0x5e, 0x59, 0xda, 0xdb, 0x00, 0x97, 0xda,
-	0xc8, 0x7d, 0x68, 0xd1, 0x44, 0x22, 0x3f, 0xf2, 0x03, 0x2c, 0x55, 0x2c, 0x1a, 0x3b, 0xdf, 0x6b,
-	0xd0, 0xfa, 0x44, 0x39, 0x2a, 0x57, 0xc8, 0x08, 0x1a, 0xfa, 0xb4, 0xc9, 0xe3, 0x2a, 0xe7, 0x96,
-	0x22, 0x66, 0x6d, 0xdf, 0x04, 0x3a, 0x3f, 0xda, 0x7d, 0x68, 0xe8, 0x6b, 0xaf, 0x26, 0x58, 0x4a,
-	0x84, 0xb5, 0xe5, 0xe8, 0xc8, 0x3b, 0x65, 0xe4, 0x9d, 0xd7, 0x45, 0xe4, 0xc9, 0x5b, 0x58, 0x2d,
-	0x12, 0x41, 0xae, 0x99, 0x5b, 0xfd, 0x2a, 0x8a, 0xab, 0x59, 0x1a, 0x0e, 0xcf, 0x2e, 0x3a, 0x2b,
-	0xbf, 0x2f, 0x3a, 0x2b, 0xdf, 0xf2, 0x8e, 0x71, 0x96, 0x77, 0x8c, 0x5f, 0x79, 0xc7, 0xf8, 0x93,
-	0x77, 0x8c, 0x2f, 0xfd, 0x1b, 0xfd, 0xa5, 0x3d, 0x9f, 0x0e, 0x3e, 0xaf, 0x8c, 0x1b, 0x8a, 0xff,
-	0xc9, 0xdf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xbf, 0xdb, 0xd1, 0x20, 0x07, 0x05, 0x00, 0x00,
+	// 678 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xc1, 0x6f, 0x12, 0x4f,
+	0x14, 0xee, 0x02, 0x5d, 0x7e, 0x3c, 0x7e, 0x34, 0x71, 0x6c, 0x9a, 0x15, 0x15, 0xc8, 0x9a, 0x28,
+	0x36, 0x71, 0x37, 0x54, 0xe3, 0x41, 0xbd, 0x14, 0xd1, 0x48, 0x5a, 0x0d, 0x59, 0x4d, 0x34, 0x1e,
+	0x24, 0x0b, 0xfb, 0x4a, 0x27, 0x5d, 0x76, 0xb7, 0x33, 0x03, 0x86, 0x9b, 0xff, 0x85, 0x7f, 0x8d,
+	0xf7, 0xde, 0xf4, 0xe8, 0x89, 0xd8, 0xfd, 0x4b, 0xcc, 0xce, 0x40, 0x29, 0x26, 0x5d, 0xd0, 0x1b,
+	0xf3, 0xde, 0xfb, 0xe6, 0xdb, 0xef, 0x7b, 0xf3, 0x1e, 0xd0, 0x18, 0x50, 0x71, 0x3c, 0xea, 0x59,
+	0xfd, 0x70, 0x68, 0xf7, 0x59, 0xc8, 0x7b, 0x93, 0x21, 0xed, 0x1f, 0xbb, 0xe8, 0xdb, 0x83, 0x91,
+	0xcb, 0x3c, 0xdb, 0x8d, 0xa8, 0x3d, 0x6e, 0xa8, 0x83, 0x15, 0xb1, 0x50, 0x84, 0xa4, 0xdc, 0x0f,
+	0x87, 0xd6, 0x52, 0xad, 0xa5, 0xd2, 0xe3, 0x46, 0x79, 0x7b, 0x10, 0x0e, 0x42, 0x59, 0x66, 0x27,
+	0xbf, 0x14, 0xa2, 0x7c, 0x73, 0x10, 0x86, 0x03, 0x1f, 0x6d, 0x79, 0xea, 0x8d, 0x8e, 0x6c, 0x1c,
+	0x46, 0x62, 0xa2, 0x92, 0x66, 0x0f, 0x4a, 0xcf, 0x19, 0xba, 0x02, 0x1d, 0x3c, 0x1d, 0x21, 0x17,
+	0x64, 0x07, 0x32, 0xd4, 0x33, 0xb4, 0x9a, 0x56, 0x2f, 0x34, 0xf5, 0x78, 0x5a, 0xcd, 0xb4, 0x5b,
+	0x4e, 0x86, 0x7a, 0xa4, 0x0a, 0x45, 0x9f, 0x72, 0x81, 0x41, 0x37, 0x0a, 0x99, 0x30, 0x32, 0x35,
+	0xad, 0x5e, 0x72, 0x40, 0x85, 0x3a, 0x21, 0x13, 0xc4, 0x80, 0xbc, 0xeb, 0x79, 0x0c, 0x39, 0x37,
+	0xb2, 0x09, 0xda, 0x99, 0x1f, 0xcd, 0x43, 0xd8, 0x7a, 0x37, 0x0a, 0x02, 0xf4, 0x1d, 0xe4, 0x51,
+	0x18, 0x70, 0x24, 0x4f, 0x40, 0x17, 0x32, 0x22, 0x89, 0x8a, 0x7b, 0xa6, 0x75, 0xb5, 0x2a, 0x6b,
+	0x86, 0x9d, 0x21, 0xcc, 0x4f, 0xb0, 0xb5, 0xef, 0x79, 0x1d, 0x44, 0xb6, 0xea, 0x93, 0x1f, 0x41,
+	0x2e, 0x42, 0x64, 0xf2, 0x5b, 0x8b, 0x7b, 0xb5, 0x34, 0x0e, 0x79, 0x9d, 0xac, 0x36, 0x3b, 0x70,
+	0xad, 0x85, 0x3e, 0x0a, 0x5c, 0x87, 0xe2, 0x0e, 0xe4, 0x13, 0x50, 0x97, 0x7a, 0x92, 0xa5, 0xd0,
+	0x84, 0x78, 0x5a, 0xd5, 0x13, 0x64, 0xbb, 0xe5, 0xe8, 0x49, 0xaa, 0xed, 0x99, 0xf7, 0xa0, 0xa4,
+	0x6e, 0x5c, 0x71, 0x9b, 0x79, 0x08, 0xff, 0x1f, 0x52, 0x2e, 0x2e, 0x6c, 0x7a, 0x06, 0x79, 0x25,
+	0x9a, 0x1b, 0x5a, 0x2d, 0xbb, 0xa6, 0x4f, 0x73, 0x88, 0xf9, 0x35, 0x03, 0xba, 0x8a, 0xa5, 0x35,
+	0x35, 0x62, 0x74, 0xec, 0x0a, 0xec, 0x9e, 0xe0, 0x44, 0x49, 0x70, 0x60, 0x16, 0x3a, 0xc0, 0xc9,
+	0x9f, 0x5d, 0xcf, 0xa6, 0x75, 0x3d, 0xb7, 0xd4, 0x75, 0x72, 0x03, 0xb2, 0x5e, 0xc0, 0x8d, 0x4d,
+	0x49, 0x9a, 0x8f, 0xa7, 0xd5, 0x6c, 0xeb, 0xcd, 0x5b, 0x27, 0x89, 0x91, 0xc7, 0xb0, 0x99, 0x58,
+	0xc3, 0x0d, 0x5d, 0xaa, 0x5a, 0xdd, 0x19, 0x55, 0x4e, 0x5e, 0x02, 0x0c, 0x5d, 0x7e, 0x3a, 0x42,
+	0xe6, 0x7a, 0x68, 0xe4, 0x65, 0x5b, 0xef, 0xa6, 0x81, 0x5f, 0x5f, 0x54, 0x3b, 0x97, 0x90, 0xe6,
+	0x37, 0x0d, 0x72, 0xc9, 0xbd, 0x57, 0xfa, 0x72, 0x1b, 0x20, 0x1a, 0xf5, 0x7c, 0xda, 0xbf, 0x64,
+	0x4b, 0x41, 0x45, 0x12, 0x57, 0x6c, 0x28, 0xba, 0xbe, 0x1f, 0x7e, 0x46, 0xaf, 0x4b, 0xa3, 0xe4,
+	0xb9, 0x67, 0xeb, 0x85, 0xe6, 0x56, 0x3c, 0xad, 0xc2, 0xbe, 0x0a, 0xb7, 0x3b, 0xdc, 0x81, 0x59,
+	0x49, 0x3b, 0xe2, 0xa4, 0x0c, 0xff, 0x61, 0xe0, 0x45, 0x21, 0x0d, 0xc4, 0xcc, 0xa6, 0x8b, 0x33,
+	0x69, 0xc0, 0x76, 0x84, 0x8c, 0x4b, 0x4b, 0x45, 0xf7, 0x04, 0x31, 0x72, 0x7d, 0x3a, 0x46, 0x69,
+	0x5c, 0xc9, 0xb9, 0xbe, 0xc8, 0x1d, 0xcc, 0x53, 0xe6, 0x2e, 0xc0, 0x42, 0x19, 0xb9, 0x05, 0x05,
+	0x1a, 0x08, 0x64, 0x47, 0x6e, 0x1f, 0x95, 0x16, 0x67, 0x11, 0xd8, 0xfb, 0x9e, 0x85, 0xc2, 0x7b,
+	0xca, 0x50, 0x7a, 0x42, 0xba, 0xa0, 0xab, 0x71, 0x27, 0xf7, 0xd3, 0x7c, 0x5b, 0x5a, 0x09, 0xe5,
+	0xdd, 0x35, 0x5e, 0xdd, 0xfc, 0xc9, 0x1e, 0x80, 0xae, 0xde, 0x7a, 0x3a, 0xc1, 0xd2, 0x3c, 0x94,
+	0x77, 0x2c, 0xb5, 0xa2, 0xac, 0xf9, 0x8a, 0xb2, 0x5e, 0x24, 0x2b, 0x8a, 0xbc, 0x82, 0x5c, 0x32,
+	0x0f, 0xe4, 0x8a, 0x7c, 0xb9, 0x9e, 0x46, 0xb1, 0x34, 0x49, 0x2e, 0xe4, 0x67, 0x4b, 0x83, 0xa4,
+	0xaa, 0x59, 0xde, 0x2c, 0x7f, 0xa5, 0x7c, 0x00, 0xb0, 0xd8, 0x1b, 0xe4, 0xc1, 0x6a, 0xf5, 0xff,
+	0x48, 0xd4, 0x6c, 0x9e, 0x9d, 0x57, 0x36, 0x7e, 0x9e, 0x57, 0x36, 0xbe, 0xc4, 0x15, 0xed, 0x2c,
+	0xae, 0x68, 0x3f, 0xe2, 0x8a, 0xf6, 0x2b, 0xae, 0x68, 0x1f, 0xeb, 0x6b, 0xfd, 0x9d, 0x3c, 0x1d,
+	0x37, 0x3e, 0x6c, 0xf4, 0x74, 0xe9, 0xe5, 0xc3, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x6d, 0xba,
+	0x1a, 0xed, 0x83, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -379,9 +466,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type WireguardClient interface {
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*TunnelResponse, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*types.Empty, error)
 	List(ctx context.Context, in *types.Empty, opts ...grpc.CallOption) (*ListResponse, error)
+	AddPeer(ctx context.Context, in *AddPeerRequest, opts ...grpc.CallOption) (*TunnelResponse, error)
+	DeletePeer(ctx context.Context, in *DeletePeerRequest, opts ...grpc.CallOption) (*TunnelResponse, error)
 }
 
 type wireguardClient struct {
@@ -392,8 +481,8 @@ func NewWireguardClient(cc *grpc.ClientConn) WireguardClient {
 	return &wireguardClient{cc}
 }
 
-func (c *wireguardClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
-	out := new(CreateResponse)
+func (c *wireguardClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*TunnelResponse, error) {
+	out := new(TunnelResponse)
 	err := c.cc.Invoke(ctx, "/com.crosbymichael.guard.v1.Wireguard/Create", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -419,11 +508,31 @@ func (c *wireguardClient) List(ctx context.Context, in *types.Empty, opts ...grp
 	return out, nil
 }
 
+func (c *wireguardClient) AddPeer(ctx context.Context, in *AddPeerRequest, opts ...grpc.CallOption) (*TunnelResponse, error) {
+	out := new(TunnelResponse)
+	err := c.cc.Invoke(ctx, "/com.crosbymichael.guard.v1.Wireguard/AddPeer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wireguardClient) DeletePeer(ctx context.Context, in *DeletePeerRequest, opts ...grpc.CallOption) (*TunnelResponse, error) {
+	out := new(TunnelResponse)
+	err := c.cc.Invoke(ctx, "/com.crosbymichael.guard.v1.Wireguard/DeletePeer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WireguardServer is the server API for Wireguard service.
 type WireguardServer interface {
-	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	Create(context.Context, *CreateRequest) (*TunnelResponse, error)
 	Delete(context.Context, *DeleteRequest) (*types.Empty, error)
 	List(context.Context, *types.Empty) (*ListResponse, error)
+	AddPeer(context.Context, *AddPeerRequest) (*TunnelResponse, error)
+	DeletePeer(context.Context, *DeletePeerRequest) (*TunnelResponse, error)
 }
 
 func RegisterWireguardServer(s *grpc.Server, srv WireguardServer) {
@@ -484,6 +593,42 @@ func _Wireguard_List_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Wireguard_AddPeer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddPeerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WireguardServer).AddPeer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/com.crosbymichael.guard.v1.Wireguard/AddPeer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WireguardServer).AddPeer(ctx, req.(*AddPeerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Wireguard_DeletePeer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePeerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WireguardServer).DeletePeer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/com.crosbymichael.guard.v1.Wireguard/DeletePeer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WireguardServer).DeletePeer(ctx, req.(*DeletePeerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Wireguard_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "com.crosbymichael.guard.v1.Wireguard",
 	HandlerType: (*WireguardServer)(nil),
@@ -499,6 +644,14 @@ var _Wireguard_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "List",
 			Handler:    _Wireguard_List_Handler,
+		},
+		{
+			MethodName: "AddPeer",
+			Handler:    _Wireguard_AddPeer_Handler,
+		},
+		{
+			MethodName: "DeletePeer",
+			Handler:    _Wireguard_DeletePeer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -543,7 +696,7 @@ func (m *CreateRequest) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *CreateResponse) Marshal() (dAtA []byte, err error) {
+func (m *TunnelResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -553,7 +706,7 @@ func (m *CreateResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *CreateResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *TunnelResponse) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -567,6 +720,76 @@ func (m *CreateResponse) MarshalTo(dAtA []byte) (int, error) {
 			return 0, err
 		}
 		i += n1
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *AddPeerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AddPeerRequest) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.ID) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintGuard(dAtA, i, uint64(len(m.ID)))
+		i += copy(dAtA[i:], m.ID)
+	}
+	if m.Peer != nil {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintGuard(dAtA, i, uint64(m.Peer.Size()))
+		n2, err := m.Peer.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n2
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *DeletePeerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DeletePeerRequest) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.ID) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintGuard(dAtA, i, uint64(len(m.ID)))
+		i += copy(dAtA[i:], m.ID)
+	}
+	if len(m.PeerID) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintGuard(dAtA, i, uint64(len(m.PeerID)))
+		i += copy(dAtA[i:], m.PeerID)
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -694,11 +917,11 @@ func (m *Tunnel) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x3a
 		i++
 		i = encodeVarintGuard(dAtA, i, uint64(m.Masquerade.Size()))
-		n2, err := m.Masquerade.MarshalTo(dAtA[i:])
+		n3, err := m.Masquerade.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n2
+		i += n3
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -721,15 +944,21 @@ func (m *Peer) MarshalTo(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.PublicKey) > 0 {
+	if len(m.ID) > 0 {
 		dAtA[i] = 0xa
+		i++
+		i = encodeVarintGuard(dAtA, i, uint64(len(m.ID)))
+		i += copy(dAtA[i:], m.ID)
+	}
+	if len(m.PublicKey) > 0 {
+		dAtA[i] = 0x12
 		i++
 		i = encodeVarintGuard(dAtA, i, uint64(len(m.PublicKey)))
 		i += copy(dAtA[i:], m.PublicKey)
 	}
 	if len(m.AllowedIPs) > 0 {
 		for _, s := range m.AllowedIPs {
-			dAtA[i] = 0x12
+			dAtA[i] = 0x1a
 			i++
 			l = len(s)
 			for l >= 1<<7 {
@@ -743,21 +972,15 @@ func (m *Peer) MarshalTo(dAtA []byte) (int, error) {
 		}
 	}
 	if len(m.Endpoint) > 0 {
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
 		i++
 		i = encodeVarintGuard(dAtA, i, uint64(len(m.Endpoint)))
 		i += copy(dAtA[i:], m.Endpoint)
 	}
 	if m.PersistentKeepalive != 0 {
-		dAtA[i] = 0x20
+		dAtA[i] = 0x28
 		i++
 		i = encodeVarintGuard(dAtA, i, uint64(m.PersistentKeepalive))
-	}
-	if len(m.Comment) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintGuard(dAtA, i, uint64(len(m.Comment)))
-		i += copy(dAtA[i:], m.Comment)
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -824,7 +1047,7 @@ func (m *CreateRequest) Size() (n int) {
 	return n
 }
 
-func (m *CreateResponse) Size() (n int) {
+func (m *TunnelResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -832,6 +1055,46 @@ func (m *CreateResponse) Size() (n int) {
 	_ = l
 	if m.Tunnel != nil {
 		l = m.Tunnel.Size()
+		n += 1 + l + sovGuard(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *AddPeerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovGuard(uint64(l))
+	}
+	if m.Peer != nil {
+		l = m.Peer.Size()
+		n += 1 + l + sovGuard(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *DeletePeerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovGuard(uint64(l))
+	}
+	l = len(m.PeerID)
+	if l > 0 {
 		n += 1 + l + sovGuard(uint64(l))
 	}
 	if m.XXX_unrecognized != nil {
@@ -921,6 +1184,10 @@ func (m *Peer) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovGuard(uint64(l))
+	}
 	l = len(m.PublicKey)
 	if l > 0 {
 		n += 1 + l + sovGuard(uint64(l))
@@ -937,10 +1204,6 @@ func (m *Peer) Size() (n int) {
 	}
 	if m.PersistentKeepalive != 0 {
 		n += 1 + sovGuard(uint64(m.PersistentKeepalive))
-	}
-	l = len(m.Comment)
-	if l > 0 {
-		n += 1 + l + sovGuard(uint64(l))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -990,12 +1253,36 @@ func (this *CreateRequest) String() string {
 	}, "")
 	return s
 }
-func (this *CreateResponse) String() string {
+func (this *TunnelResponse) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&CreateResponse{`,
+	s := strings.Join([]string{`&TunnelResponse{`,
 		`Tunnel:` + strings.Replace(fmt.Sprintf("%v", this.Tunnel), "Tunnel", "Tunnel", 1) + `,`,
+		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *AddPeerRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&AddPeerRequest{`,
+		`ID:` + fmt.Sprintf("%v", this.ID) + `,`,
+		`Peer:` + strings.Replace(fmt.Sprintf("%v", this.Peer), "Peer", "Peer", 1) + `,`,
+		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *DeletePeerRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&DeletePeerRequest{`,
+		`ID:` + fmt.Sprintf("%v", this.ID) + `,`,
+		`PeerID:` + fmt.Sprintf("%v", this.PeerID) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
 	}, "")
@@ -1045,11 +1332,11 @@ func (this *Peer) String() string {
 		return "nil"
 	}
 	s := strings.Join([]string{`&Peer{`,
+		`ID:` + fmt.Sprintf("%v", this.ID) + `,`,
 		`PublicKey:` + fmt.Sprintf("%v", this.PublicKey) + `,`,
 		`AllowedIPs:` + fmt.Sprintf("%v", this.AllowedIPs) + `,`,
 		`Endpoint:` + fmt.Sprintf("%v", this.Endpoint) + `,`,
 		`PersistentKeepalive:` + fmt.Sprintf("%v", this.PersistentKeepalive) + `,`,
-		`Comment:` + fmt.Sprintf("%v", this.Comment) + `,`,
 		`XXX_unrecognized:` + fmt.Sprintf("%v", this.XXX_unrecognized) + `,`,
 		`}`,
 	}, "")
@@ -1211,7 +1498,7 @@ func (m *CreateRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *CreateResponse) Unmarshal(dAtA []byte) error {
+func (m *TunnelResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1234,10 +1521,10 @@ func (m *CreateResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: CreateResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: TunnelResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: TunnelResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1275,6 +1562,246 @@ func (m *CreateResponse) Unmarshal(dAtA []byte) error {
 			if err := m.Tunnel.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGuard(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthGuard
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthGuard
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AddPeerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGuard
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AddPeerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AddPeerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGuard
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGuard
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGuard
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Peer", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGuard
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGuard
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGuard
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Peer == nil {
+				m.Peer = &Peer{}
+			}
+			if err := m.Peer.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGuard(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthGuard
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthGuard
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DeletePeerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGuard
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DeletePeerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DeletePeerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGuard
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGuard
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGuard
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PeerID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGuard
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGuard
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGuard
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PeerID = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1777,6 +2304,38 @@ func (m *Peer) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGuard
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGuard
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGuard
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
 			}
 			var stringLen uint64
@@ -1807,7 +2366,7 @@ func (m *Peer) Unmarshal(dAtA []byte) error {
 			}
 			m.PublicKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AllowedIPs", wireType)
 			}
@@ -1839,7 +2398,7 @@ func (m *Peer) Unmarshal(dAtA []byte) error {
 			}
 			m.AllowedIPs = append(m.AllowedIPs, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Endpoint", wireType)
 			}
@@ -1871,7 +2430,7 @@ func (m *Peer) Unmarshal(dAtA []byte) error {
 			}
 			m.Endpoint = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PersistentKeepalive", wireType)
 			}
@@ -1890,38 +2449,6 @@ func (m *Peer) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Comment", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowGuard
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthGuard
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthGuard
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Comment = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipGuard(dAtA[iNdEx:])

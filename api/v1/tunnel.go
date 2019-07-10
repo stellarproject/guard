@@ -47,7 +47,7 @@ PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -
 {{end}}
 
 {{range $peer := .Peers -}}
-# {{$peer.Comment}}
+# {{$peer.ID}}
 [Peer]
 PublicKey = {{$peer.PublicKey}}
 AllowedIPs = {{joinIPs $peer.AllowedIPs}}
