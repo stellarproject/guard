@@ -9,6 +9,15 @@ A GRPC server for managing wireguard tunnels.
 Wireguard and it's untilities, `wg`, `wg-quick`, and `wg-quick@.service` must be installed on the system hosting
 the `guard` server.
 
+### Run the server
+
+When you run the wireguard server it will automatically create its own wireguard tunnel
+that the server binds to.  This makes the server secure to manage across your network.
+Use the `--address` flag to manage this server.
+
+```bash
+> sudo guard server
+```
 
 ### Create a new tunnel
 

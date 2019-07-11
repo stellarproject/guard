@@ -59,7 +59,7 @@ func main() {
 		cli.StringFlag{
 			Name:  "address,a",
 			Usage: "grpc address",
-			Value: "127.0.0.1:10100",
+			Value: "10.199.199.1:10100",
 		},
 		cli.StringFlag{
 			Name:   "sentry-dsn",
@@ -112,6 +112,28 @@ var serverCommand = cli.Command{
 		server := newGRPC()
 
 		v1.RegisterWireguardServer(server, wg)
+		ctx := cancelContext()
+
+		address := clix.GlobalString("address")
+		host, _, err := net.SplitHostPort(address)
+		if err != nil {
+			return errors.Wrap(err, "splitting tunnel address")
+		}
+		r, err := wg.Create(ctx, &v1.CreateRequest{
+			ID:       guardTunnel,
+			Address:  host + "/32",
+			Endpoint: address,
+		})
+		if err == nil {
+			logrus.Info("created guard0 tunnel")
+			if err := jsonTunnel(r.Tunnel); err != nil {
+				return err
+			}
+		} else if err != ErrTunnelExists {
+			return err
+		}
+
+		// create our server tunnel
 
 		signals := make(chan os.Signal, 32)
 		signal.Notify(signals, syscall.SIGTERM, syscall.SIGINT)
@@ -119,7 +141,7 @@ var serverCommand = cli.Command{
 			<-signals
 			server.Stop()
 		}()
-		l, err := net.Listen("tcp", clix.GlobalString("address"))
+		l, err := net.Listen("tcp", address)
 		if err != nil {
 			return errors.Wrap(err, "listen tcp")
 		}
@@ -162,9 +184,7 @@ var createCommand = cli.Command{
 		if err != nil {
 			return err
 		}
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", " ")
-		return enc.Encode(r.Tunnel)
+		return jsonTunnel(r.Tunnel)
 	},
 }
 
@@ -298,9 +318,7 @@ var peersCommand = cli.Command{
 				if err != nil {
 					return err
 				}
-				enc := json.NewEncoder(os.Stdout)
-				enc.SetIndent("", " ")
-				return enc.Encode(r.Tunnel)
+				return jsonTunnel(r.Tunnel)
 			},
 		},
 		{
@@ -325,9 +343,7 @@ var peersCommand = cli.Command{
 				if err != nil {
 					return err
 				}
-				enc := json.NewEncoder(os.Stdout)
-				enc.SetIndent("", " ")
-				return enc.Encode(r.Tunnel)
+				return jsonTunnel(r.Tunnel)
 			},
 		},
 	},
@@ -389,4 +405,10 @@ func cancelContext() context.Context {
 		cancel()
 	}()
 	return ctx
+}
+
+func jsonTunnel(t *v1.Tunnel) error {
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", " ")
+	return enc.Encode(t)
 }

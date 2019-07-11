@@ -42,13 +42,18 @@ import (
 	v1 "github.com/crosbymichael/guard/api/v1"
 	"github.com/gogo/protobuf/types"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
-var empty = &types.Empty{}
+var (
+	empty           = &types.Empty{}
+	ErrTunnelExists = errors.New("tunnel exists")
+)
 
 const (
 	defaultWireguardDir = "/etc/wireguard"
 	tunnelData          = "tunnel.json"
+	guardTunnel         = "guard0"
 )
 
 func newServer(dir string) (*server, error) {
@@ -74,6 +79,7 @@ func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.TunnelRes
 	if r.Endpoint == "" {
 		return nil, errors.New("endpoint cannot be empty")
 	}
+	log := logrus.WithField("tunnel", r.ID)
 	host, port, err := net.SplitHostPort(r.Endpoint)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot split endpoint into host and port")
@@ -81,7 +87,8 @@ func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.TunnelRes
 	path := filepath.Join(s.dir, r.ID)
 	if err := os.Mkdir(path, 0700); err != nil {
 		if os.IsExist(err) {
-			return nil, errors.New("tunnel already exists")
+			log.Error("existing tunnel")
+			return nil, ErrTunnelExists
 		}
 		return nil, errors.Wrap(err, "create tunnel directory")
 	}
@@ -101,21 +108,24 @@ func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.TunnelRes
 		PublicKey:  pub,
 		Endpoint:   host,
 	}
-
 	if err := s.saveTunnel(&t); err != nil {
+		log.WithError(err).Error("save tunnel")
 		return nil, err
 	}
 	if err := s.saveConf(&t); err != nil {
+		log.WithError(err).Error("save config")
 		os.RemoveAll(path)
-
 		return nil, err
 	}
 	if err := wgquick(ctx, "enable", t.ID); err != nil {
+		log.WithError(err).Error("enable tunnel")
 		return nil, errors.Wrap(err, "enable tunnel")
 	}
 	if err := wgquick(ctx, "start", t.ID); err != nil {
+		log.WithError(err).Error("start tunnel")
 		return nil, errors.Wrap(err, "start tunnel")
 	}
+	log.Info("tunnel created")
 	return &v1.TunnelResponse{
 		Tunnel: &t,
 	}, nil
@@ -125,16 +135,23 @@ func (s *server) NewPeer(ctx context.Context, r *v1.NewPeerRequest) (*v1.PeerRes
 	if r.ID == "" {
 		return nil, errors.New("tunnel id cannot be empty")
 	}
+	log := logrus.WithFields(logrus.Fields{
+		"tunnel": r.ID,
+		"peer":   r.PeerID,
+	})
 	t, err := s.loadTunnel(r.ID)
 	if err != nil {
+		log.WithError(err).Error("load tunnel")
 		return nil, err
 	}
 	peerKey, err := newPrivateKey(ctx)
 	if err != nil {
+		log.WithError(err).Error("new private key")
 		return nil, err
 	}
 	publicKey, err := publicKey(ctx, peerKey)
 	if err != nil {
+		log.WithError(err).Error("new public key")
 		return nil, err
 	}
 	peer := &v1.Peer{
@@ -146,13 +163,17 @@ func (s *server) NewPeer(ctx context.Context, r *v1.NewPeerRequest) (*v1.PeerRes
 		},
 	}
 	t.Peers = append(t.Peers, peer)
+	// TODO: make atomic swaps
 	if err := s.saveTunnel(t); err != nil {
+		log.WithError(err).Error("save tunnel")
 		return nil, err
 	}
 	if err := s.saveConf(t); err != nil {
+		log.WithError(err).Error("save config")
 		return nil, err
 	}
 	if err := wgquick(ctx, "restart", t.ID); err != nil {
+		log.WithError(err).Error("restart config")
 		return nil, errors.Wrap(err, "restart tunnel")
 	}
 	return &v1.PeerResponse{
@@ -165,16 +186,23 @@ func (s *server) AddPeer(ctx context.Context, r *v1.AddPeerRequest) (*v1.TunnelR
 	if r.ID == "" {
 		return nil, errors.New("tunnel id cannot be empty")
 	}
+	log := logrus.WithFields(logrus.Fields{
+		"tunnel": r.ID,
+		"peer":   r.PeerID,
+	})
 	t, err := s.loadTunnel(r.ID)
 	if err != nil {
+		log.WithError(err).Error("load tunnel")
 		return nil, err
 	}
 	t.Peers = append(t.Peers, r.Peer)
 
 	if err := s.saveTunnel(t); err != nil {
+		log.WithError(err).Error("save tunnel")
 		return nil, err
 	}
 	if err := s.saveConf(t); err != nil {
+		log.WithError(err).Error("save config")
 		return nil, err
 	}
 	if err := wgquick(ctx, "restart", t.ID); err != nil {
@@ -192,6 +220,11 @@ func (s *server) DeletePeer(ctx context.Context, r *v1.DeletePeerRequest) (*v1.T
 	if r.PeerID == "" {
 		return nil, errors.New("peer id cannot be empty")
 	}
+	log := logrus.WithFields(logrus.Fields{
+		"tunnel": r.ID,
+		"peer":   r.PeerID,
+	})
+
 	t, err := s.loadTunnel(r.ID)
 	if err != nil {
 		return nil, err
@@ -210,8 +243,10 @@ func (s *server) DeletePeer(ctx context.Context, r *v1.DeletePeerRequest) (*v1.T
 		return nil, err
 	}
 	if err := wgquick(ctx, "restart", t.ID); err != nil {
+		log.WithError(err).Error("restart config")
 		return nil, errors.Wrap(err, "restart tunnel")
 	}
+	log.Info("delete peer")
 	return &v1.TunnelResponse{
 		Tunnel: t,
 	}, nil
@@ -221,11 +256,14 @@ func (s *server) Delete(ctx context.Context, r *v1.DeleteRequest) (*types.Empty,
 	if r.ID == "" {
 		return nil, errors.New("tunnel id cannot be empty")
 	}
+	log := logrus.WithField("tunnel", r.ID)
 	path := filepath.Join(s.dir, r.ID)
 	if err := wgquick(ctx, "disable", r.ID); err != nil {
+		log.WithError(err).Error("disable tunnel")
 		return nil, errors.Wrap(err, "disable tunnel")
 	}
 	if err := wgquick(ctx, "stop", r.ID); err != nil {
+		log.WithError(err).Error("stop tunnel")
 		return nil, errors.Wrap(err, "stop tunnel")
 	}
 	if err := os.RemoveAll(path); err != nil {
@@ -234,6 +272,7 @@ func (s *server) Delete(ctx context.Context, r *v1.DeleteRequest) (*types.Empty,
 	if err := os.Remove(filepath.Join(s.dir, fmt.Sprintf("%s.conf", r.ID))); err != nil {
 		return nil, errors.Wrap(err, "remove configuration")
 	}
+	log.Info("delete tunnel")
 	return empty, nil
 }
 
