@@ -286,6 +286,9 @@ func (s *server) List(ctx context.Context, _ *types.Empty) (*v1.ListResponse, er
 		if !f.IsDir() {
 			continue
 		}
+		if f.Name() == guardTunnel {
+			continue
+		}
 		t, err := s.loadTunnel(f.Name())
 		if err != nil {
 			return nil, err
