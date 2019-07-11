@@ -6,7 +6,7 @@ A GRPC server for managing wireguard tunnels.
 
 ## Requirements
 
-Wireguard and it's untilities, `wg`, `wg-quick`, and `wg-quick@.service` must be installed on the system hosting
+Wireguard and it's utilities, `wg`, `wg-quick`, and `wg-quick@.service` must be installed on the system hosting
 the `guard` server.
 
 ### Run the server
