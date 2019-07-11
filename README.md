@@ -1,0 +1,102 @@
+# guard
+
+A GRPC server for managing wireguard tunnels.
+
+## Status: alpha
+
+## Requirements
+
+Wireguard and it's untilities, `wg`, `wg-quick`, and `wg-quick@.service` must be installed on the system hosting
+the `guard` server.
+
+
+### Create a new tunnel
+
+
+To create a new tunnel specify the address and the endpoint for the tunnel.
+The last argument is used as the tunnel ID and interface name on the server.
+
+```bash
+> guard create --address 192.168.5.1/32 --endpoint 127.0.0.1:31000 wg0
+
+{
+ "id": "wg0",
+ "private_key": "+EymZwYNHxGVe5T1gmTbwKmQgWksDlZzldTwoZi5lnQ=",
+ "listen_port": "31000",
+ "address": "192.168.5.1/32",
+ "public_key": "irDV3wkkNe6f1GLAPFNGjj0xsQsoxPCNko4Lf3igcjM=",
+ "endpoint": "127.0.0.1"
+}
+```
+
+### Delete a tunnel
+
+Delete a tunnel using the tunnel ID
+
+```bash
+> guard delete wg0
+```
+
+### Create a new peer
+
+To create a new peer and have all the keys generated for you use the `peers new` command.
+The peer configuration will be output to `stdout` that you can copy and paste into your client.
+
+```bash
+> guard peers --tunnel wg0 new --ip 192.168.5.2/32 --dns 192.168.5.1 --ips 192.168.5.0/24 --ips 192.168.0.1/24 mypeer
+
+[Interface]
+PrivateKey = kFJ6VSq+l6sBPaI2DUbEWSVI83Kcfz/yo7WfVheT+FI=
+Address = 192.168.5.2/32
+DNS = 192.168.5.1
+
+# wg0
+[Peer]
+PublicKey = irDV3wkkNe6f1GLAPFNGjj0xsQsoxPCNko4Lf3igcjM=
+AllowedIPs = 192.168.5.0/24, 192.168.0.1/24
+Endpoint = 127.0.0.1:31000
+```
+
+### List all tunnels
+
+```bash
+> guard list
+
+[
+ {
+  "id": "wg0",
+  "private_key": "+EymZwYNHxGVe5T1gmTbwKmQgWksDlZzldTwoZi5lnQ=",
+  "listen_port": "31000",
+  "address": "192.168.5.1/32",
+  "peers": [
+   {
+    "id": "mypeer",
+    "public_key": "u/eGf6olYeFSH4XoPvOSZJb9swA/qWPAlfSxRBi6Uw8=",
+    "allowed_ips": [
+     "192.168.5.2/32"
+    ],
+    "private_key": "kFJ6VSq+l6sBPaI2DUbEWSVI83Kcfz/yo7WfVheT+FI="
+   }
+  ],
+  "public_key": "irDV3wkkNe6f1GLAPFNGjj0xsQsoxPCNko4Lf3igcjM=",
+  "endpoint": "127.0.0.1"
+ }
+]
+```
+
+### Delete a peer by ID
+
+You can remove and update peers using the `peers` commands.
+
+```bash
+> guard peers --tunnel wg0 delete mypeer
+
+{
+ "id": "wg0",
+ "private_key": "+EymZwYNHxGVe5T1gmTbwKmQgWksDlZzldTwoZi5lnQ=",
+ "listen_port": "31000",
+ "address": "192.168.5.1/32",
+ "public_key": "irDV3wkkNe6f1GLAPFNGjj0xsQsoxPCNko4Lf3igcjM=",
+ "endpoint": "127.0.0.1"
+}
+```

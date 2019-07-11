@@ -31,7 +31,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"net"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -69,8 +71,12 @@ func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.TunnelRes
 	if r.Address == "" {
 		return nil, errors.New("address cannot be empty")
 	}
-	if r.ListenPort == 0 {
-		return nil, errors.New("listen port cannot be 0")
+	if r.Endpoint == "" {
+		return nil, errors.New("endpoint cannot be empty")
+	}
+	host, port, err := net.SplitHostPort(r.Endpoint)
+	if err != nil {
+		return nil, errors.Wrap(err, "cannot split endpoint into host and port")
 	}
 	path := filepath.Join(s.dir, r.ID)
 	if err := os.Mkdir(path, 0700); err != nil {
@@ -83,11 +89,17 @@ func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.TunnelRes
 	if err != nil {
 		return nil, err
 	}
+	pub, err := publicKey(ctx, key)
+	if err != nil {
+		return nil, err
+	}
 	t := v1.Tunnel{
 		ID:         r.ID,
-		ListenPort: r.ListenPort,
+		ListenPort: port,
 		Address:    r.Address,
 		PrivateKey: key,
+		PublicKey:  pub,
+		Endpoint:   host,
 	}
 
 	if err := s.saveTunnel(&t); err != nil {
@@ -106,6 +118,46 @@ func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.TunnelRes
 	}
 	return &v1.TunnelResponse{
 		Tunnel: &t,
+	}, nil
+}
+
+func (s *server) NewPeer(ctx context.Context, r *v1.NewPeerRequest) (*v1.PeerResponse, error) {
+	if r.ID == "" {
+		return nil, errors.New("tunnel id cannot be empty")
+	}
+	t, err := s.loadTunnel(r.ID)
+	if err != nil {
+		return nil, err
+	}
+	peerKey, err := newPrivateKey(ctx)
+	if err != nil {
+		return nil, err
+	}
+	publicKey, err := publicKey(ctx, peerKey)
+	if err != nil {
+		return nil, err
+	}
+	peer := &v1.Peer{
+		ID:         r.PeerID,
+		PublicKey:  publicKey,
+		PrivateKey: peerKey,
+		AllowedIPs: []string{
+			r.Address,
+		},
+	}
+	t.Peers = append(t.Peers, peer)
+	if err := s.saveTunnel(t); err != nil {
+		return nil, err
+	}
+	if err := s.saveConf(t); err != nil {
+		return nil, err
+	}
+	if err := wgquick(ctx, "restart", t.ID); err != nil {
+		return nil, errors.Wrap(err, "restart tunnel")
+	}
+	return &v1.PeerResponse{
+		Tunnel: t,
+		Peer:   peer,
 	}, nil
 }
 
@@ -250,8 +302,23 @@ func newPrivateKey(ctx context.Context) (string, error) {
 	return strings.TrimSuffix(string(data), "\n"), nil
 }
 
+func publicKey(ctx context.Context, privateKey string) (string, error) {
+	r := strings.NewReader(privateKey)
+	data, err := wireguardData(ctx, r, "pubkey")
+	if err != nil {
+		return "", errors.Wrapf(err, "%s", data)
+	}
+	return strings.TrimSuffix(string(data), "\n"), nil
+}
+
 func wireguard(ctx context.Context, args ...string) ([]byte, error) {
 	cmd := exec.CommandContext(ctx, "wg", args...)
+	return cmd.CombinedOutput()
+}
+
+func wireguardData(ctx context.Context, r io.Reader, args ...string) ([]byte, error) {
+	cmd := exec.CommandContext(ctx, "wg", args...)
+	cmd.Stdin = r
 	return cmd.CombinedOutput()
 }
 

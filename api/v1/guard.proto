@@ -8,16 +8,24 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/crosbymichael/guard/api/v1;v1";
 
 service Wireguard {
+	// Create a new tunnel
 	rpc Create(CreateRequest) returns (TunnelResponse);
+	// Delete a tunnel
 	rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+	// List all tunnels
 	rpc List(google.protobuf.Empty) returns (ListResponse);
+	// NewPeer to the tunnel with gernerated keys
+	rpc NewPeer(NewPeerRequest) returns (PeerResponse);
+	// AddPeer to the tunnel
 	rpc AddPeer(AddPeerRequest) returns (TunnelResponse);
+	// DeletePeer from a tunnel
 	rpc DeletePeer(DeletePeerRequest) returns (TunnelResponse);
 }
 
 message CreateRequest {
+	// id of the tunnel
 	string id = 1 [(gogoproto.customname) = "ID"];
-	uint32 listen_port = 2;
+	string endpoint = 2;
 	string address = 3;
 }
 
@@ -25,17 +33,32 @@ message TunnelResponse {
 	Tunnel tunnel = 1;
 }
 
+message PeerResponse {
+	Tunnel tunnel = 1;
+	Peer peer = 2;
+}
+
+message NewPeerRequest {
+	// id of the tunnel
+	string id = 1 [(gogoproto.customname) = "ID"];
+	string peer_id = 2 [(gogoproto.customname) = "PeerID"];
+	string address = 3;
+}
+
 message AddPeerRequest {
+	// id of the tunnel
 	string id = 1 [(gogoproto.customname) = "ID"];
 	Peer peer = 2;
 }
 
 message DeletePeerRequest {
+	// id of the tunnel
 	string id = 1 [(gogoproto.customname) = "ID"];
 	string peer_id = 2 [(gogoproto.customname) = "PeerID"];
 }
 
 message DeleteRequest {
+	// id of the tunnel
 	string id = 1 [(gogoproto.customname) = "ID"];
 }
 
@@ -46,11 +69,13 @@ message ListResponse {
 message Tunnel {
 	string id = 1 [(gogoproto.customname) = "ID"];
 	string private_key = 2;
-	uint32 listen_port = 3;
+	string listen_port = 3;
 	string address = 4;
 	string dns = 5 [(gogoproto.customname) = "DNS"];
 	repeated Peer peers = 6;
 	Masquerade masquerade = 7;
+	string public_key = 8;
+	string endpoint = 9;
 }
 
 message Peer {
@@ -59,6 +84,7 @@ message Peer {
 	repeated string allowed_ips = 3 [(gogoproto.customname) = "AllowedIPs"];
 	string endpoint = 4;
 	uint32 persistent_keepalive = 5;
+	string private_key = 6;
 }
 
 message Masquerade {

@@ -136,9 +136,10 @@ var createCommand = cli.Command{
 			Name:  "address,a",
 			Usage: "cidr for the tunnel address",
 		},
-		cli.UintFlag{
-			Name:  "port,p",
-			Usage: "listen port for the tunnel",
+		cli.StringFlag{
+			Name:  "endpoint,e",
+			Usage: "set the endpoint for the tunnel",
+			Value: "127.0.0.1:31000",
 		},
 	},
 	Action: func(clix *cli.Context) error {
@@ -154,9 +155,9 @@ var createCommand = cli.Command{
 		)
 
 		r, err := client.Create(ctx, &v1.CreateRequest{
-			ID:         clix.Args().First(),
-			Address:    clix.String("address"),
-			ListenPort: uint32(clix.Uint("port")),
+			ID:       clix.Args().First(),
+			Address:  clix.String("address"),
+			Endpoint: clix.String("endpoint"),
 		})
 		if err != nil {
 			return err
@@ -204,6 +205,61 @@ var peersCommand = cli.Command{
 		},
 	},
 	Subcommands: []cli.Command{
+		{
+			Name:        "new",
+			Description: "create a new peer",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "ip,i",
+					Usage: "ip cidr for the peer",
+				},
+				cli.StringFlag{
+					Name:  "dns",
+					Usage: "dns for the peer",
+				},
+				cli.StringSliceFlag{
+					Name:  "ips",
+					Usage: "allowed ips",
+					Value: &cli.StringSlice{},
+				},
+			},
+			Action: func(clix *cli.Context) error {
+				conn, err := grpc.Dial(clix.GlobalString("address"), grpc.WithInsecure())
+				if err != nil {
+					return errors.Wrap(err, "dial server")
+				}
+				defer conn.Close()
+
+				var (
+					ctx    = cancelContext()
+					client = v1.NewWireguardClient(conn)
+				)
+
+				r, err := client.NewPeer(ctx, &v1.NewPeerRequest{
+					ID:      clix.GlobalString("tunnel"),
+					PeerID:  clix.Args().First(),
+					Address: clix.String("ip"),
+				})
+				if err != nil {
+					return err
+				}
+				// generate peer tunnel config
+				t := &v1.Tunnel{
+					PrivateKey: r.Peer.PrivateKey,
+					Address:    r.Peer.AllowedIPs[0],
+					DNS:        clix.String("dns"),
+					Peers: []*v1.Peer{
+						{
+							ID:         r.Tunnel.ID,
+							PublicKey:  r.Tunnel.PublicKey,
+							Endpoint:   net.JoinHostPort(r.Tunnel.Endpoint, r.Tunnel.ListenPort),
+							AllowedIPs: clix.StringSlice("ips"),
+						},
+					},
+				}
+				return t.Render(os.Stdout)
+			},
+		},
 		{
 			Name:        "add",
 			Description: "add a peer",

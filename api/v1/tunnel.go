@@ -37,15 +37,13 @@ import (
 
 const confFmt = `[Interface]
 PrivateKey = {{.PrivateKey}}
-{{if gt .ListenPort 0}}ListenPort = {{.ListenPort}}{{end}}
+{{if .ListenPort}}ListenPort = {{.ListenPort}}{{end}}
 Address = {{.Address}}
 {{if .DNS }}DNS = {{.DNS}}{{end}}
-
 {{if .Masquerade}}
 PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o {{.Masquerade.Interface}} -j MASQUERADE
 PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o {{.Masquerade.Interface}} -j MASQUERADE
 {{end}}
-
 {{range $peer := .Peers -}}
 # {{$peer.ID}}
 [Peer]
