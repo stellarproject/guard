@@ -16,8 +16,6 @@ service Wireguard {
 	rpc List(google.protobuf.Empty) returns (ListResponse);
 	// NewPeer to the tunnel with gernerated keys
 	rpc NewPeer(NewPeerRequest) returns (PeerResponse);
-	// AddPeer to the tunnel
-	rpc AddPeer(AddPeerRequest) returns (TunnelResponse);
 	// DeletePeer from a tunnel
 	rpc DeletePeer(DeletePeerRequest) returns (TunnelResponse);
 }
@@ -43,12 +41,6 @@ message NewPeerRequest {
 	string id = 1 [(gogoproto.customname) = "ID"];
 	string peer_id = 2 [(gogoproto.customname) = "PeerID"];
 	string address = 3;
-}
-
-message AddPeerRequest {
-	// id of the tunnel
-	string id = 1 [(gogoproto.customname) = "ID"];
-	Peer peer = 2;
 }
 
 message DeletePeerRequest {

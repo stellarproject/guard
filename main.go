@@ -291,47 +291,6 @@ var peersCommand = cli.Command{
 			},
 		},
 		{
-			Name:        "add",
-			Description: "add a peer",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "key,k",
-					Usage: "public key",
-				},
-				cli.StringFlag{
-					Name:  "ip,i",
-					Usage: "ip cidr for the peer",
-				},
-			},
-			Action: func(clix *cli.Context) error {
-				conn, err := grpc.Dial(clix.GlobalString("address"), grpc.WithInsecure())
-				if err != nil {
-					return errors.Wrap(err, "dial server")
-				}
-				defer conn.Close()
-
-				var (
-					ctx    = cancelContext()
-					client = v1.NewWireguardClient(conn)
-				)
-
-				r, err := client.AddPeer(ctx, &v1.AddPeerRequest{
-					ID: clix.GlobalString("tunnel"),
-					Peer: &v1.Peer{
-						ID:        clix.Args().First(),
-						PublicKey: clix.String("key"),
-						AllowedIPs: []string{
-							clix.String("ip"),
-						},
-					},
-				})
-				if err != nil {
-					return err
-				}
-				return jsonTunnel(r.Tunnel)
-			},
-		},
-		{
 			Name:        "delete",
 			Description: "delete a peer",
 			Action: func(clix *cli.Context) error {

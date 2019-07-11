@@ -126,6 +126,8 @@ func (s *server) Create(ctx context.Context, r *v1.CreateRequest) (*v1.TunnelRes
 		return nil, errors.Wrap(err, "start tunnel")
 	}
 	log.Info("tunnel created")
+
+	clearTunnel(&t)
 	return &v1.TunnelResponse{
 		Tunnel: &t,
 	}, nil
@@ -162,7 +164,8 @@ func (s *server) NewPeer(ctx context.Context, r *v1.NewPeerRequest) (*v1.PeerRes
 			r.Address,
 		},
 	}
-	t.Peers = append(t.Peers, peer)
+	peerCopy := *peer
+	t.Peers = append(t.Peers, &peerCopy)
 	// TODO: make atomic swaps
 	if err := s.saveTunnel(t); err != nil {
 		log.WithError(err).Error("save tunnel")
@@ -176,40 +179,10 @@ func (s *server) NewPeer(ctx context.Context, r *v1.NewPeerRequest) (*v1.PeerRes
 		log.WithError(err).Error("restart config")
 		return nil, errors.Wrap(err, "restart tunnel")
 	}
+	clearTunnel(t)
 	return &v1.PeerResponse{
 		Tunnel: t,
 		Peer:   peer,
-	}, nil
-}
-
-func (s *server) AddPeer(ctx context.Context, r *v1.AddPeerRequest) (*v1.TunnelResponse, error) {
-	if r.ID == "" {
-		return nil, errors.New("tunnel id cannot be empty")
-	}
-	log := logrus.WithFields(logrus.Fields{
-		"tunnel": r.ID,
-		"peer":   r.Peer.ID,
-	})
-	t, err := s.loadTunnel(r.ID)
-	if err != nil {
-		log.WithError(err).Error("load tunnel")
-		return nil, err
-	}
-	t.Peers = append(t.Peers, r.Peer)
-
-	if err := s.saveTunnel(t); err != nil {
-		log.WithError(err).Error("save tunnel")
-		return nil, err
-	}
-	if err := s.saveConf(t); err != nil {
-		log.WithError(err).Error("save config")
-		return nil, err
-	}
-	if err := wgquick(ctx, "restart", t.ID); err != nil {
-		return nil, errors.Wrap(err, "restart tunnel")
-	}
-	return &v1.TunnelResponse{
-		Tunnel: t,
 	}, nil
 }
 
@@ -247,6 +220,7 @@ func (s *server) DeletePeer(ctx context.Context, r *v1.DeletePeerRequest) (*v1.T
 		return nil, errors.Wrap(err, "restart tunnel")
 	}
 	log.Info("delete peer")
+	clearTunnel(t)
 	return &v1.TunnelResponse{
 		Tunnel: t,
 	}, nil
@@ -293,6 +267,7 @@ func (s *server) List(ctx context.Context, _ *types.Empty) (*v1.ListResponse, er
 		if err != nil {
 			return nil, err
 		}
+		clearTunnel(t)
 		r.Tunnels = append(r.Tunnels, t)
 	}
 	return &r, nil
@@ -351,6 +326,13 @@ func publicKey(ctx context.Context, privateKey string) (string, error) {
 		return "", errors.Wrapf(err, "%s", data)
 	}
 	return strings.TrimSuffix(string(data), "\n"), nil
+}
+
+func clearTunnel(t *v1.Tunnel) {
+	t.PrivateKey = ""
+	for _, p := range t.Peers {
+		p.PrivateKey = ""
+	}
 }
 
 func wireguard(ctx context.Context, args ...string) ([]byte, error) {

@@ -22,7 +22,6 @@ INFO[0000] tunnel created                                tunnel=guard0
 INFO[0000] created guard0 tunnel
 {
  "id": "guard0",
- "private_key": "+A4O44heAgTmLcVipqSFAYxigpAv61UbWigU0xoHbng=",
  "listen_port": "10100",
  "address": "10.199.199.1/32",
  "public_key": "37uzie/EZzzDpRbVTUOtuVXwhht/599pdhseh9MJ7QE=",
@@ -50,7 +49,6 @@ The last argument is used as the tunnel ID and interface name on the server.
 
 {
  "id": "wg0",
- "private_key": "+EymZwYNHxGVe5T1gmTbwKmQgWksDlZzldTwoZi5lnQ=",
  "listen_port": "31000",
  "address": "192.168.5.1/32",
  "public_key": "irDV3wkkNe6f1GLAPFNGjj0xsQsoxPCNko4Lf3igcjM=",
@@ -94,7 +92,6 @@ Endpoint = 127.0.0.1:31000
 [
  {
   "id": "wg0",
-  "private_key": "+EymZwYNHxGVe5T1gmTbwKmQgWksDlZzldTwoZi5lnQ=",
   "listen_port": "31000",
   "address": "192.168.5.1/32",
   "peers": [
@@ -104,7 +101,6 @@ Endpoint = 127.0.0.1:31000
     "allowed_ips": [
      "192.168.5.2/32"
     ],
-    "private_key": "kFJ6VSq+l6sBPaI2DUbEWSVI83Kcfz/yo7WfVheT+FI="
    }
   ],
   "public_key": "irDV3wkkNe6f1GLAPFNGjj0xsQsoxPCNko4Lf3igcjM=",
@@ -122,7 +118,6 @@ You can remove and update peers using the `peers` commands.
 
 {
  "id": "wg0",
- "private_key": "+EymZwYNHxGVe5T1gmTbwKmQgWksDlZzldTwoZi5lnQ=",
  "listen_port": "31000",
  "address": "192.168.5.1/32",
  "public_key": "irDV3wkkNe6f1GLAPFNGjj0xsQsoxPCNko4Lf3igcjM=",
