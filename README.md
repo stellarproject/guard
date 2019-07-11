@@ -17,6 +17,26 @@ Use the `--address` flag to manage this server.
 
 ```bash
 > sudo guard server
+
+INFO[0000] tunnel created                                tunnel=guard0
+INFO[0000] created guard0 tunnel
+{
+ "id": "guard0",
+ "private_key": "+A4O44heAgTmLcVipqSFAYxigpAv61UbWigU0xoHbng=",
+ "listen_port": "10100",
+ "address": "10.199.199.1/32",
+ "public_key": "37uzie/EZzzDpRbVTUOtuVXwhht/599pdhseh9MJ7QE=",
+ "endpoint": "127.0.0.1"
+}
+```
+
+```bash
+> sudo wg
+
+interface: guard0
+  public key: 37uzie/EZzzDpRbVTUOtuVXwhht/599pdhseh9MJ7QE=
+  private key: (hidden)
+  listening port: 10100
 ```
 
 ### Create a new tunnel
