@@ -100,6 +100,10 @@ var serverCommand = cli.Command{
 			Usage: "wireguard configuration directory",
 			Value: defaultWireguardDir,
 		},
+		cli.StringFlag{
+			Name:  "endpoint",
+			Usage: "external endpoint address to manage the wireguard",
+		},
 	},
 	Action: func(clix *cli.Context) error {
 		if os.Geteuid() != 0 {
@@ -112,17 +116,23 @@ var serverCommand = cli.Command{
 		server := newGRPC()
 
 		v1.RegisterWireguardServer(server, wg)
-		ctx := cancelContext()
 
-		address := clix.GlobalString("address")
-		host, _, err := net.SplitHostPort(address)
+		var (
+			ctx      = cancelContext()
+			endpoint = clix.String("endpoint")
+			address  = clix.GlobalString("address")
+		)
+		host, port, err := net.SplitHostPort(address)
 		if err != nil {
 			return errors.Wrap(err, "splitting tunnel address")
+		}
+		if endpoint == "" {
+			endpoint = net.JoinHostPort("127.0.0.1", port)
 		}
 		r, err := wg.Create(ctx, &v1.CreateRequest{
 			ID:       guardTunnel,
 			Address:  host + "/32",
-			Endpoint: address,
+			Endpoint: endpoint,
 		})
 		if err == nil {
 			logrus.Info("created guard0 tunnel")

@@ -188,7 +188,7 @@ func (s *server) AddPeer(ctx context.Context, r *v1.AddPeerRequest) (*v1.TunnelR
 	}
 	log := logrus.WithFields(logrus.Fields{
 		"tunnel": r.ID,
-		"peer":   r.PeerID,
+		"peer":   r.Peer.ID,
 	})
 	t, err := s.loadTunnel(r.ID)
 	if err != nil {
