@@ -25,7 +25,6 @@
 
 PACKAGES=$(shell go list ./... | grep -v /vendor/)
 REVISION=$(shell git rev-parse HEAD)
-CGO_ENABLED=0
 
 all: build
 
@@ -33,4 +32,4 @@ protos:
 	@protobuild --quiet ${PACKAGES}
 
 build:
-	@go build -v -installsuffix cgo
+	@CGO_ENABLED=0 go build -v -a -ldflags '-extldflags "-static"' .
