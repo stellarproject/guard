@@ -35,9 +35,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	v1 "github.com/crosbymichael/guard/api/v1"
-	"github.com/getsentry/raven-go"
+	"github.com/getsentry/sentry-go"
 	"github.com/gogo/protobuf/types"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/pkg/errors"
@@ -72,8 +73,13 @@ func main() {
 			logrus.SetLevel(logrus.DebugLevel)
 		}
 		if dsn := clix.GlobalString("sentry-dsn"); dsn != "" {
-			raven.SetDSN(dsn)
-			raven.DefaultClient.SetRelease(app.Version)
+			err := sentry.Init(sentry.ClientOptions{
+				Dsn:     dsn,
+				Release: app.Version,
+			})
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	}
@@ -86,7 +92,12 @@ func main() {
 	}
 	if err := app.Run(os.Args); err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		raven.CaptureErrorAndWait(err, nil)
+		sentry.CaptureMessage(err.Error())
+		if sentry.Flush(time.Second * 2) {
+			// event delivered?
+		} else {
+			fmt.Println(os.Stderr, "Failed to flush error to sentry")
+		}
 		os.Exit(1)
 	}
 }
@@ -352,7 +363,7 @@ func newGRPC() *grpc.Server {
 func unary(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 	r, err := grpc_prometheus.UnaryServerInterceptor(ctx, req, info, handler)
 	if err != nil {
-		raven.CaptureError(err, nil)
+		sentry.CaptureException(err)
 	}
 	return r, err
 }
@@ -360,7 +371,7 @@ func unary(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, han
 func stream(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 	err := grpc_prometheus.StreamServerInterceptor(srv, ss, info, handler)
 	if err != nil {
-		raven.CaptureError(err, nil)
+		sentry.CaptureException(err)
 	}
 	return err
 }
