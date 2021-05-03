@@ -2,9 +2,9 @@ name: Go
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
 
@@ -17,9 +17,12 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16.3
-
+        token: ${{ secrets.GO_TOKEN }}
     - name: Build
       run: go build -v ./...
-
     - name: Test
       run: go test -v ./...
+    - name: go-cross-build
+      uses: thatisuday/go-cross-build@v1.1.0
+      with:
+       platforms: linux/386,linux/amd64,linux/arm64
